@@ -28,7 +28,7 @@ $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="sidebar">
             <div class="sidebar-header">
                 <h3>Swachh Worker</h3>
-                <p>Welcome, <?php echo htmlspecialchars($worker_name); ?></p>
+                <p>Namaste, <?php echo htmlspecialchars($worker_name); ?></p>
             </div>
             <ul class="sidebar-menu">
                 <li><a href="dashboard.php">Dashboard</a></li>

@@ -13,7 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['admin_password'])) {
     } else {
         $error = "Invalid admin password";
     }
-}
 
 if (isset($_GET['logout'])) {
     unset($_SESSION['admin_logged_in']);
@@ -60,52 +59,88 @@ if (!$is_admin) {
 }
 
 // Handle admin actions
-if ($is_admin && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
-    try {
-        switch ($_POST['action']) {
-            case 'add_user':
-                $name = trim($_POST['name'] ?? '');
-                $email = trim($_POST['email'] ?? '');
-                $role = $_POST['role'] ?? '';
-                $password = $_POST['password'] ?? '';
-                if ($name && filter_var($email, FILTER_VALIDATE_EMAIL) && in_array($role, ['resident','worker'])) {
-                    $exists = $pdo->prepare("SELECT id FROM users WHERE email=?");
-                    $exists->execute([$email]);
-                    if (!$exists->fetch()) {
-                        $hash = password_hash($password ?: '12345', PASSWORD_DEFAULT);
-                        $ins = $pdo->prepare("INSERT INTO users (name,email,password,role,credits) VALUES (?,?,?,?,?)");
-                        $ins->execute([$name,$email,$hash,$role, $role==='resident'?100:0]);
+if ($is_admin && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Monthly Challenges actions
+    if (isset($_POST['add_challenge'])) {
+        $title = $_POST['title'];
+        $description = $_POST['description'];
+        $reward = intval($_POST['reward']);
+        $month = intval($_POST['month']);
+        $year = intval($_POST['year']);
+        $stmt = $pdo->prepare("INSERT INTO monthly_challenges (title, description, reward, month, year, active) VALUES (?, ?, ?, ?, ?, 1)");
+        $stmt->execute([$title, $description, $reward, $month, $year]);
+        $success = "Challenge added successfully.";
+    } elseif (isset($_POST['edit_id'])) {
+        $id = intval($_POST['edit_id']);
+        $title = $_POST['title'];
+        $description = $_POST['description'];
+        $reward = intval($_POST['reward']);
+        $stmt = $pdo->prepare("UPDATE monthly_challenges SET title=?, description=?, reward=? WHERE id=?");
+        $stmt->execute([$title, $description, $reward, $id]);
+        $success = "Challenge updated successfully.";
+    } elseif (isset($_POST['toggle_id'])) {
+        $id = intval($_POST['toggle_id']);
+        $stmt = $pdo->prepare("UPDATE monthly_challenges SET active = 1 - active WHERE id=?");
+        $stmt->execute([$id]);
+        $success = "Challenge status changed.";
+    } elseif (isset($_POST['delete_id'])) {
+        $id = intval($_POST['delete_id']);
+        $stmt = $pdo->prepare("DELETE FROM monthly_challenges WHERE id=?");
+        $stmt->execute([$id]);
+        $success = "Challenge deleted successfully.";
+    }
+    // After any action, reload the page to reflect changes
+    if (isset($success)) {
+        echo "<script>location.href=location.href;</script>";
+        exit();
+    }
+    // Other admin actions
+    if (isset($_POST['action'])) {
+        try {
+            switch ($_POST['action']) {
+                case 'add_user':
+                    $name = trim($_POST['name'] ?? '');
+                    $email = trim($_POST['email'] ?? '');
+                    $role = $_POST['role'] ?? '';
+                    $password = $_POST['password'] ?? '';
+                    if ($name && filter_var($email, FILTER_VALIDATE_EMAIL) && in_array($role, ['resident','worker'])) {
+                        $exists = $pdo->prepare("SELECT id FROM users WHERE email=?");
+                        $exists->execute([$email]);
+                        if (!$exists->fetch()) {
+                            $hash = password_hash($password ?: '12345', PASSWORD_DEFAULT);
+                            $ins = $pdo->prepare("INSERT INTO users (name,email,password,role,credits) VALUES (?,?,?,?,?)");
+                            $ins->execute([$name,$email,$hash,$role, $role==='resident'?100:0]);
+                        }
                     }
-                }
-                break;
-            case 'add_society':
-                $name = trim($_POST['name'] ?? '');
-                if ($name) {
-                    $pdo->prepare("INSERT INTO societies (name) VALUES (?)")->execute([$name]);
-                }
-                break;
-            case 'add_block':
-                $society_id = (int)($_POST['society_id'] ?? 0);
-                $name = trim($_POST['name'] ?? '');
-                if ($society_id && $name) {
-                    $pdo->prepare("INSERT INTO blocks (society_id, name) VALUES (?,?)")->execute([$society_id, $name]);
-                }
-                break;
-            case 'add_apartment':
-                $block_id = (int)($_POST['block_id'] ?? 0);
-                $apt_number = trim($_POST['apt_number'] ?? '');
-                if ($block_id && $apt_number) {
-                    $pdo->prepare("INSERT INTO apartments (block_id, apt_number, resident_id) VALUES (?,?,NULL)")->execute([$block_id, $apt_number]);
-                }
-                break;
-            case 'assign_apartment':
-                $apartment_id = (int)($_POST['apartment_id'] ?? 0);
-                $resident_id = (int)($_POST['resident_id'] ?? 0);
-                if ($apartment_id && $resident_id) {
-                    $pdo->prepare("UPDATE apartments SET resident_id=? WHERE id=?")->execute([$resident_id, $apartment_id]);
-                }
-                break;
-            case 'mark_penalty_paid':
+                    break;
+                case 'add_society':
+                    $name = trim($_POST['name'] ?? '');
+                    if ($name) {
+                        $pdo->prepare("INSERT INTO societies (name) VALUES (?)")->execute([$name]);
+                    }
+                    break;
+                case 'add_block':
+                    $society_id = (int)($_POST['society_id'] ?? 0);
+                    $name = trim($_POST['name'] ?? '');
+                    if ($society_id && $name) {
+                        $pdo->prepare("INSERT INTO blocks (society_id, name) VALUES (?,?)")->execute([$society_id, $name]);
+                    }
+                    break;
+                case 'add_apartment':
+                    $block_id = (int)($_POST['block_id'] ?? 0);
+                    $apt_number = trim($_POST['apt_number'] ?? '');
+                    if ($block_id && $apt_number) {
+                        $pdo->prepare("INSERT INTO apartments (block_id, apt_number, resident_id) VALUES (?,?,NULL)")->execute([$block_id, $apt_number]);
+                    }
+                    break;
+                case 'assign_apartment':
+                    $apartment_id = (int)($_POST['apartment_id'] ?? 0);
+                    $resident_id = (int)($_POST['resident_id'] ?? 0);
+                    if ($apartment_id && $resident_id) {
+                        $pdo->prepare("UPDATE apartments SET resident_id=? WHERE id=?")->execute([$resident_id, $apartment_id]);
+                    }
+                    break;
+                case 'mark_penalty_paid':
                 $penalty_id = (int)($_POST['penalty_id'] ?? 0);
                 if ($penalty_id) {
                     $pdo->prepare("UPDATE penalties SET status='paid', paid_at=NOW() WHERE id=?")->execute([$penalty_id]);
@@ -122,10 +157,12 @@ if ($is_admin && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']
                         ->execute([$user_id, $title, $message, $type]);
                 }
                 break;
+            }
+        } catch (PDOException $e) {
+            // In production, log error
         }
-    } catch (PDOException $e) {
-        // In production, log error
     }
+}
 }
 
 // Get statistics and datasets
@@ -224,6 +261,7 @@ try {
                 <li><a href="#societies">Manage Societies</a></li>
                 <li><a href="#apartments">Apartments</a></li>
                 <li><a href="#penalties">Penalties</a></li>
+                <li><a href="#monthly-challenges">Manage Monthly Challenges</a></li>
                 <li><a href="#notifications">Notifications</a></li>
                 <li><a href="?logout=1">Logout</a></li>
             </ul>
@@ -237,6 +275,8 @@ try {
                     <a href="?logout=1" class="logout-btn">Logout</a>
                 </div>
             </div>
+
+
             
             <!-- Statistics Cards -->
             <div class="stats-grid">
@@ -272,6 +312,7 @@ try {
                 </div>
             </div>
             
+
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
                 <!-- Recent Reports -->
                 <div class="card">
@@ -303,7 +344,9 @@ try {
                         </table>
                     </div>
                 </div>
-                
+
+
+
                 <!-- Low Credit Users -->
                 <div class="card">
                     <div class="card-header">
@@ -338,6 +381,9 @@ try {
                 </div>
             </div>
             
+
+
+
             <!-- Manage Users -->
             <div id="users" class="card">
                 <div class="card-header">
@@ -518,7 +564,7 @@ try {
                     <h3>Penalties</h3>
                 </div>
                 <?php if (empty($penalties)): ?>
-                    <div style="padding: 10px; color: #666;">No penalty data (table may not exist or no records).</div>
+                    <div style="padding: 10px; color: #666;">No penalty data yet.</div>
                 <?php else: ?>
                 <div class="table-container">
                     <table>
@@ -557,6 +603,60 @@ try {
                     </table>
                 </div>
                 <?php endif; ?>
+            </div>
+
+                        <!-- Manage Monthly Challenges (Embedded) -->
+            <div id="monthly-challenges" class="card">
+                <div class="card-header">
+                    <h3>Manage Monthly Challenges</h3>
+                </div>
+                    <form method="post" style="margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+                        <input type="text" name="title" placeholder="Title" required class="form-control" style="width: 180px; padding: 10px 14px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem;">
+                        <input type="text" name="description" placeholder="Description" required class="form-control" style="width: 320px; padding: 10px 14px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem;">
+                        <input type="number" name="reward" placeholder="Reward Credits" required min="1" class="form-control" style="width: 120px; padding: 10px 14px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem;">
+                        <select name="month" required class="form-control" style="width: 100px; padding: 10px 14px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem;">
+                            <?php for ($m=1; $m<=12; $m++): ?>
+                                <option value="<?php echo $m; ?>" <?php echo ($m == date('n')) ? 'selected' : ''; ?>><?php echo date('F', mktime(0,0,0,$m,1)); ?></option>
+                            <?php endfor; ?>
+                        </select>
+                        <input type="number" name="year" value="<?php echo date('Y'); ?>" required class="form-control" style="width: 80px; padding: 10px 14px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem;">
+                        <div style="flex:1; text-align:right;">
+                            <button type="submit" name="add_challenge" class="btn btn-primary" style="padding: 10px 24px; border-radius: 6px; font-size: 1rem;">Add Challenge</button>
+                        </div>
+                    </form>
+                <?php
+                $stmt = $pdo->query("SELECT * FROM monthly_challenges ORDER BY id DESC");
+                $challenges = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                ?>
+                <table class="challenge-table" style="width:100%; border-collapse:collapse; margin-bottom:30px;">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Reward</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($challenges as $c): ?>
+                        <tr>
+                            <form method="post" style="display:contents;">
+                                <td><input type="text" name="title" value="<?php echo htmlspecialchars($c['title']); ?>" class="form-control" style="width:140px; padding:8px 12px; border-radius:6px; border:1px solid #ccc; font-size:1rem;"></td>
+                                <td><input type="text" name="description" value="<?php echo htmlspecialchars($c['description']); ?>" class="form-control" style="width:260px; padding:8px 12px; border-radius:6px; border:1px solid #ccc; font-size:1rem;"></td>
+                                <td><input type="number" name="reward" value="<?php echo $c['reward']; ?>" class="form-control" style="width:80px; padding:8px 12px; border-radius:6px; border:1px solid #ccc; font-size:1rem;"></td>
+                                <td><?php echo $c['active'] ? '<span style="color:green;">Active</span>' : '<span style="color:#999;">Inactive</span>'; ?></td>
+                                <td>
+                                    <input type="hidden" name="challenge_id" value="<?php echo $c['id']; ?>">
+                                    <button type="submit" name="edit_id" value="<?php echo $c['id']; ?>" class="btn btn-action">Save</button>
+                                    <button type="submit" name="toggle_id" value="<?php echo $c['id']; ?>" class="btn btn-action"><?php echo $c['active'] ? 'Deactivate' : 'Activate'; ?></button>
+                                    <button type="submit" name="delete_id" value="<?php echo $c['id']; ?>" class="btn btn-danger" onclick="return confirm('Delete this challenge?');">Delete</button>
+                                </td>
+                            </form>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
 
             <!-- Notifications -->

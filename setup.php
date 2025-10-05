@@ -66,8 +66,8 @@ try {
             echo "{$u[1]} already exists.<br>";
             continue;
         }
-        $hash = password_hash($u[2], PASSWORD_DEFAULT);
-        $add->execute([$u[0], $u[1], $hash, $u[3]]);
+        // $hash = password_hash($u[2], PASSWORD_DEFAULT);
+        $add->execute([$u[0], $u[1], $u[2], $u[3]]);
         echo "Inserted user {$u[1]}.<br>";
     }
 

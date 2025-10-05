@@ -15,7 +15,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Allow both hashed and plaintext password comparisons to handle mismatched setups
     if ($user && (password_verify($password, $user["password"]) || $user["password"] === $password)) {
         if ($user["role"] !== $role) {
-            echo "Role mismatch!";
+            $_SESSION['login_error'] = "Role mismatch! Please select the correct role.";
+            header("Location: ../login.php");
             exit;
         }
 

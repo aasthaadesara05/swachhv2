@@ -27,14 +27,14 @@
         </nav>
 
         <div class="hero-content">
-            <h2 class="headline">Turn everyday waste into community progress</h2>
-            <p class="subhead">Track segregation, earn credits, reduce penalties, and build a cleaner city together. Real-time monitoring for residents, workers, and administrators.</p>
+            <h2 class="headline">Join India's Clean Revolution!</h2>
+            <p class="subhead">Be a part of the Swachh Bharat movement. Segregate your waste, earn Swachh credits, and help make your society, city, and country cleaner and greener. Real-time tracking for residents and workers, with rewards for every positive step. Together, let's build a Bharat that shines!</p>
             <div class="cta-row">
                 <a href="signup.php" class="btn btn-cta btn-lg">Get started</a>
                 <a href="login.php" class="btn btn-outline btn-lg">I already have an account</a>
             </div>
             <div class="trust-row">
-                <div class="trust-badge">ISO 14001 Inspired</div>
+                <div class="trust-badge">Clean India</div>
                 <div class="trust-badge">Privacy-first</div>
                 <div class="trust-badge">Open Data Ready</div>
             </div>
@@ -47,7 +47,7 @@
             </div>
             <div class="stat">
                 <div class="stat-value">1.2k</div>
-                <div class="stat-label">Active Households</div>
+                <div class="stat-label">Active Indian Households</div>
             </div>
             <div class="stat">
                 <div class="stat-value">64t</div>
@@ -66,22 +66,23 @@
                 <div class="feature-card">
                     <div class="feature-icon">📊</div>
                     <h4>See your impact</h4>
-                    <p>Personal dashboards for households and workers with weekly insights and easy-to-read trends.</p>
+                    <p>Personal dashboards for residents and workers show weekly insights, monthly challenges, and instant updates on your progress and rewards.</p>
                 </div>
+                
                 <div class="feature-card">
                     <div class="feature-icon">🎯</div>
-                    <h4>Credits, not confusion</h4>
-                    <p>Earn green credits for consistent segregation. Clear rules, no guesswork, fair outcomes.</p>
+                    <h4>Credits & Penalties</h4>
+                    <p>Earn green credits for proper segregation, and face fair penalties for missed goals. Clear rules, transparent outcomes, and a level playing field for all.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🔔</div>
                     <h4>Stay in the loop</h4>
-                    <p>Friendly alerts and reminders — from collection schedules to policy updates — right when you need them.</p>
+                    <p>Get instant notifications for new challenges, collection schedules, penalties, and policy updates—right when you need them.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🛡️</div>
-                    <h4>Privacy by default</h4>
-                    <p>Your data stays yours. We use only what’s necessary to make the system work for you.</p>
+                    <div class="feature-icon">🏆</div>
+                    <h4>Monthly Challenges</h4>
+                    <p>Admins can create and manage monthly challenges. Residents compete, earn extra credits, and see results reflected instantly in their dashboard.</p>
                 </div>
             </div>
         </section>
@@ -136,7 +137,7 @@
                     </ul>
                     <a href="signup.php" class="btn btn-outline">Start as Worker</a>
                 </div>
-                <!-- <div class="aud-card">
+                <!--<div class="aud-card">
                     <h4>For Admins</h4>
                     <ul>
                         <li>Ward-level analytics</li>
@@ -168,7 +169,7 @@
                         <span>Waste segregation made simple</span>
                     </div>
                 </div>
-                <p class="fineprint">Built for real people and real cities. No jargon, just cleaner streets.</p>
+                <p class="fineprint">Ek kadam swachhata ki aur.</p>
             </div>
             <div>
                 <h5>Links</h5>
@@ -186,7 +187,7 @@
                 </ul>
             </div>
         </div>
-        <div class="copyright">© <?php echo date('Y'); ?> Swachh. All rights reserved.</div>
+        <div class="copyright">© <?php echo date('Y'); ?> Swachh. All rights reserved by Aastha Adesara.</div>
     </footer>
     <script>
         // Smooth scroll for same-page anchors if added later

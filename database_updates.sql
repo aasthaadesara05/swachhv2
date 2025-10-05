@@ -189,3 +189,23 @@ INSERT IGNORE INTO notifications (user_id, title, message, type) VALUES
 (2, 'First Report', 'Your first waste segregation report has been recorded. Keep up the good work!', 'success');
 
 COMMIT;
+
+-- Table for monthly challenges
+CREATE TABLE IF NOT EXISTS monthly_challenges (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    description TEXT NOT NULL,
+    reward INT NOT NULL,
+    month INT NOT NULL,
+    year INT NOT NULL,
+    active TINYINT(1) DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Example inserts
+
+-- Example insert for October 2025
+INSERT INTO monthly_challenges (title, description, reward, month, year, active) VALUES
+('Zero Waste Weekend', 'Generate no waste on Saturday/Sunday', 25, 10, 2025, 1),
+('Education Champion', 'Share segregation tips with 5 neighbors', 30, 10, 2025, 1),
+('Perfect Month', '100% proper segregation', 100, 10, 2025, 1);

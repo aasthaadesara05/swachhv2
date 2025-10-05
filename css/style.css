@@ -1,3 +1,4 @@
+
 /* Modern CSS for Swachh Waste Management System */
 
 :root {
@@ -337,7 +338,8 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: var(--transition);
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
+    margin-bottom: 0;
 }
 
 .btn-primary:hover {
@@ -766,6 +768,7 @@ tr:hover {
     color: white;
     width: 81px;
     box-shadow: 0 2px 6px rgba(46, 204, 113, 0.3);
+    margin-bottom: 0px;
 }
 
 .btn-block.btn-secondary {

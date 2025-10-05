@@ -126,13 +126,14 @@ $credit_goals = [
         <div class="sidebar">
             <div class="sidebar-header">
                 <h3>Swachh Resident</h3>
-                <p>Welcome, <?php echo htmlspecialchars($resident_name); ?></p>
+                <p>Namaste, <?php echo htmlspecialchars($resident_name); ?></p>
             </div>
             <ul class="sidebar-menu">
 				<li><a href="dashboard.php">Dashboard</a></li>
 				<li><a href="history.php">History</a></li>
 				<li><a href="analytics.php">Analytics</a></li>
 				<li><a href="#" class="active">Credits & Penalties</a></li>
+				<li><a href="redeem.php">Reward Redemption</a></li>
 				<li><a href="../api/logout.php">Logout</a></li>
             </ul>
         </div>

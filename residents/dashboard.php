@@ -1,5 +1,16 @@
+<!-- Streak Bonuses
+7-day streak: +10 bonus credits
+30-day streak: +50 bonus credits + "Consistency Champion" badge
+90-day streak: +150 bonus credits + special reward unlock
+
+Monthly Challenges
+"Zero Waste Weekend" - Generate no waste on Saturday/Sunday: +25 credits
+"Education Champion" - Share segregation tips with 5 neighbors: +30 credits
+"Perfect Month" - 100% proper segregation: +100 bonus credits -->
+
 <?php
 session_start();
+
 require_once "../db.php";
 
 if (!isset($_SESSION["user_id"]) || $_SESSION["user_role"] !== "resident") {
@@ -9,6 +20,13 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["user_role"] !== "resident") {
 
 $resident_id = $_SESSION["user_id"];
 $resident_name = $_SESSION["user_name"];
+
+// Get monthly challenges for current month/year
+$current_month = (int)date('n');
+$current_year = (int)date('Y');
+$stmt = $pdo->prepare("SELECT title, description, reward FROM monthly_challenges WHERE active=1 AND month=? AND year=? ORDER BY id DESC");
+$stmt->execute([$current_month, $current_year]);
+$monthly_challenges = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Get apartment info
 $stmt = $pdo->prepare("
@@ -29,6 +47,7 @@ if ($apartment) {
     $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+
 // Calculate monthly stats for credit score
 $monthly = ["segregated"=>0,"partial"=>0,"not"=>0,"no_waste"=>0];
 $today = new DateTime();
@@ -37,6 +56,50 @@ foreach ($reports as $r) {
     $date = new DateTime($r["report_date"]);
     $days = $today->diff($date)->days;
     if ($days <= 30) $monthly[$r["status"]]++;
+}
+
+// --- Streak Calculation ---
+$streak = 0;
+$last_date = null;
+foreach ($reports as $r) {
+    if ($r['status'] === 'segregated') {
+        $date = new DateTime($r['report_date']);
+        if ($last_date === null) {
+            $streak = 1;
+        } else {
+            $diff = $last_date->diff($date)->days;
+            if ($diff === 1) {
+                $streak++;
+            } else {
+                break;
+            }
+        }
+        $last_date = $date;
+    } else {
+        break;
+    }
+}
+
+// --- Streak Bonuses ---
+$streak_bonus = null;
+if ($streak >= 90) {
+    $streak_bonus = [
+        'credits' => 150,
+        'badge' => 'Special Reward Unlock',
+        'label' => '90-day streak!'
+    ];
+} elseif ($streak >= 30) {
+    $streak_bonus = [
+        'credits' => 50,
+        'badge' => 'Consistency Champion',
+        'label' => '30-day streak!'
+    ];
+} elseif ($streak >= 7) {
+    $streak_bonus = [
+        'credits' => 10,
+        'badge' => null,
+        'label' => '7-day streak!'
+    ];
 }
 
 // Get current credits
@@ -93,7 +156,7 @@ if (count($last_week_reports) > 0 && count($previous_week_reports) > 0) {
         <div class="sidebar">
             <div class="sidebar-header">
                 <h3>Swachh Resident</h3>
-                <p>Welcome, <?php echo htmlspecialchars($resident_name); ?></p>
+                <p>Namaste, <?php echo htmlspecialchars($resident_name); ?></p>
             </div>
             <ul class="sidebar-menu">
 				<li><a href="#" class="active">Dashboard</a></li>
@@ -105,6 +168,7 @@ if (count($last_week_reports) > 0 && count($previous_week_reports) > 0) {
         </div>
         
         <div class="main-content">
+            
             <div class="content-header">
                 <h1>Your Waste Segregation Dashboard</h1>
                 <div class="user-info">
@@ -147,12 +211,12 @@ if (count($last_week_reports) > 0 && count($previous_week_reports) > 0) {
                     <div class="stat-label">Current Credits</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">📅</div>
-                    <div class="stat-value"><?php echo count($last_week_reports); ?></div>
-                    <div class="stat-label">Reports This Week</div>
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-value"><?php echo $streak; ?></div>
+                    <div class="stat-label">Current Streak</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">✅</div>
+                    <div class="stat-icon">🏅</div>
                     <div class="stat-value"><?php echo $monthly["segregated"]; ?></div>
                     <div class="stat-label">Segregated This Month</div>
                 </div>
@@ -162,6 +226,58 @@ if (count($last_week_reports) > 0 && count($previous_week_reports) > 0) {
                     <div class="stat-label">Weekly Trend</div>
                 </div>
             </div>
+
+            <!-- Streak Display Card -->
+            <div class="card" style="border-left: 4px solid var(--primary-color); background: #f8fff4; margin-bottom: 20px;">
+                <div class="card-header">
+                    <h3>🔥 Your Current Streak</h3>
+                </div>
+                <div style="font-size: 1.2rem; color: #333;">
+                    <strong><?php echo $streak; ?> days</strong> of consecutive proper segregation!
+                </div>
+                <div style="margin-top: 8px; color: #666;">
+                    <?php if ($streak < 7): ?>
+                        Keep going! Next bonus at <strong>7 days</strong>.
+                    <?php elseif ($streak < 30): ?>
+                        Great job! Next bonus at <strong>30 days</strong>.
+                    <?php elseif ($streak < 90): ?>
+                        Amazing! Next bonus at <strong>90 days</strong>.
+                    <?php else: ?>
+                        You're a streak legend!
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Monthly Challenges -->
+            <div class="card" style="border-left: 4px solid var(--primary-color); background: #f4faff; margin-bottom: 20px;">
+                <div class="card-header">
+                    <h3>🏆 Monthly Challenges</h3>
+                </div>
+                <ul style="list-style: none; padding-left: 0;">
+                    <?php if (!empty($monthly_challenges)): ?>
+                        <?php foreach ($monthly_challenges as $challenge): ?>
+                        <li style="margin-bottom: 12px;">
+                            <strong><?php echo htmlspecialchars($challenge['title']); ?></strong>: 
+                            <span><?php echo htmlspecialchars($challenge['description']); ?></span>
+                            <span style="color: var(--primary-color); font-weight: bold;">+<?php echo htmlspecialchars($challenge['reward']); ?> credits</span>
+                        </li>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <li>No monthly challenges available right now.</li>
+                    <?php endif; ?>
+                </ul>
+            </div>
+            <?php if ($streak_bonus): ?>
+            <div class="card" style="border-left: 4px solid var(--primary-color); background: #f8fff4;">
+                <div class="card-header">
+                    <h3>🎉 Streak Bonus: <?php echo $streak_bonus['label']; ?></h3>
+                </div>
+                <p style="color:#333; font-size:1.1rem;">
+                    You earned <strong><?php echo $streak_bonus['credits']; ?> bonus credits</strong>
+                    <?php if ($streak_bonus['badge']): ?> and the <strong><?php echo $streak_bonus['badge']; ?></strong> badge!<?php endif; ?>
+                </p>
+            </div>
+            <?php endif; ?>
             
             <!-- Quick Analytics Link -->
             <?php if ($apartment): ?>
