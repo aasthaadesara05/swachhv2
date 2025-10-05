@@ -6,6 +6,13 @@ require_once "../db.php";
 $admin_password = "admin123"; // Change this in production
 $is_admin = isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true;
 
+// Handle logout for any request
+if (isset($_GET['logout'])) {
+    unset($_SESSION['admin_logged_in']);
+    $is_admin = false;
+}
+
+// Handle admin login
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['admin_password'])) {
     if ($_POST['admin_password'] === $admin_password) {
         $_SESSION['admin_logged_in'] = true;
@@ -13,12 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['admin_password'])) {
     } else {
         $error = "Invalid admin password";
     }
-
-if (isset($_GET['logout'])) {
-    unset($_SESSION['admin_logged_in']);
-    $is_admin = false;
 }
 
+// Show login form if not admin
 if (!$is_admin) {
     ?>
     <!DOCTYPE html>
@@ -162,7 +166,6 @@ if ($is_admin && $_SERVER['REQUEST_METHOD'] === 'POST') {
             // In production, log error
         }
     }
-}
 }
 
 // Get statistics and datasets
