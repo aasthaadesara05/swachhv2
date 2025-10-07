@@ -75,7 +75,6 @@ $performance_percentage = $total_reports > 0 ? (($segregated_count + ($partial_c
 				<li><a href="analytics.php">Analytics</a></li>
 				<li><a href="credits.php">Credits & Penalties</a></li>
 				<li><a href="redeem.php">Reward Redemption</a></li>
-				<li><a href="../api/logout.php">Logout</a></li>
             </ul>
         </div>
         

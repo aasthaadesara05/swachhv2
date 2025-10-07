@@ -62,7 +62,6 @@ $stats = $stats_stmt->fetch(PDO::FETCH_ASSOC);
             <ul class="sidebar-menu">
                 <li><a href="dashboard.php">Dashboard</a></li>
                 <li><a href="#" class="active">Historical Reports</a></li>
-                <li><a href="../api/logout.php">Logout</a></li>
             </ul>
         </div>
         

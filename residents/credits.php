@@ -134,7 +134,6 @@ $credit_goals = [
 				<li><a href="analytics.php">Analytics</a></li>
 				<li><a href="#" class="active">Credits & Penalties</a></li>
 				<li><a href="redeem.php">Reward Redemption</a></li>
-				<li><a href="../api/logout.php">Logout</a></li>
             </ul>
         </div>
         

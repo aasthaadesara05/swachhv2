@@ -176,7 +176,6 @@
                 <ul class="footer-links">
                     <li><a href="signup.php">Sign up</a></li>
                     <li><a href="login.php">Log in</a></li>
-                    <li><a href="admin/index.php">Admin</a></li>
                 </ul>
             </div>
             <div>
@@ -187,7 +186,7 @@
                 </ul>
             </div>
         </div>
-        <div class="copyright">© <?php echo date('Y'); ?> Swachh. All rights reserved by Aastha Adesara.</div>
+        <div class="copyright">© <?php echo date('Y'); ?> Swachh. All rights reserved by Aastha Adesara and Maharshi Gajjar.</div>
     </footer>
     <script>
         // Smooth scroll for same-page anchors if added later

@@ -11,7 +11,7 @@
     <div class="auth-container">
         <div class="auth-box">
             <div class="auth-header">
-                <h2>Namaste to Swachh</h2>
+                <h2>Welcome to Swachh</h2>
                 <p>Smart Waste Segregation Monitoring System</p>
                 <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: var(--border-radius); border-left: 4px solid var(--primary-color);">
                     <h4 style="margin-bottom: 10px; color: var(--primary-color);">🌱 Ek Kadam Swachhta Ki Aur</h4>
@@ -83,8 +83,7 @@
                 
                 <div class="auth-footer">
                     <p>Don't have an account? <a href="signup.php">Sign up here</a></p>
-                    <p style="margin-top:8px; font-size: 0.9rem;">Admin? <a href="admin/index.php">Go to Admin Login</a></p>
-                </div>
+                         </div>
             </form>
             
             <?php if (isset($_SESSION['login_error'])): ?>

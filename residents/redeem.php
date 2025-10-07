@@ -75,7 +75,6 @@ $tiers = [
 				<li><a href="analytics.php">Analytics</a></li>
 				<li><a href="credits.php">Credits & Penalties</a></li>
 				<li><a href="#" class="active">Reward Redemption</a></li>
-				<li><a href="../api/logout.php">Logout</a></li>
 			</ul>
 		</div>
 

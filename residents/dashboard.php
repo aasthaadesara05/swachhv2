@@ -163,7 +163,8 @@ if (count($last_week_reports) > 0 && count($previous_week_reports) > 0) {
 				<li><a href="history.php">History</a></li>
 				<li><a href="analytics.php">Analytics</a></li>
 				<li><a href="credits.php">Credits & Penalties</a></li>
-				<li><a href="../api/logout.php">Logout</a></li>
+                
+				<li><a href="redeem.php">Reward Redemption</a></li>
             </ul>
         </div>
         

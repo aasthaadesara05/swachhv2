@@ -112,7 +112,6 @@ if ($apartment) {
 				<li><a href="#" class="active">Analytics</a></li>
 				<li><a href="credits.php">Credits & Penalties</a></li>
 				<li><a href="redeem.php">Reward Redemption</a></li>
-				<li><a href="../api/logout.php">Logout</a></li>
 			</ul>
 		</div>
 

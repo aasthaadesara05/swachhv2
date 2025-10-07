@@ -90,7 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             <ul class="sidebar-menu">
                 <li><a href="#" class="active">Dashboard</a></li>
                 <li><a href="reports.php">Historical Reports</a></li>
-                <li><a href="../api/logout.php">Logout</a></li>
             </ul>
         </div>
         
@@ -176,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             <?php if (!$selected_society): ?>
             <div class="card">
                 <div style="text-align: center; padding: 40px; color: #666;">
-                    <h3>Namaste to Swachh Worker Dashboard</h3>
+                    <h3>Welcome to Swachh Worker Dashboard</h3>
                     <p>Select a society above to start monitoring waste segregation.</p>
                 </div>
             </div>

@@ -266,7 +266,6 @@ try {
                 <li><a href="#penalties">Penalties</a></li>
                 <li><a href="#monthly-challenges">Manage Monthly Challenges</a></li>
                 <li><a href="#notifications">Notifications</a></li>
-                <li><a href="?logout=1">Logout</a></li>
             </ul>
         </div>
         
