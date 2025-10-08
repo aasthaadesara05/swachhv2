@@ -186,7 +186,7 @@
                 </ul>
             </div>
         </div>
-        <div class="copyright">© <?php echo date('Y'); ?> Swachh. All rights reserved by Aastha Adesara and Maharshi Gajjar.</div>
+        <div class="copyright">© <?php echo date('Y'); ?> Swachh. All rights reserved by Aastha Adesara.</div>
     </footer>
     <script>
         // Smooth scroll for same-page anchors if added later
